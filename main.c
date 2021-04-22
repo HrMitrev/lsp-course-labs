@@ -23,7 +23,7 @@ main (int argc, char *argv[])
   printf ("please input two integers\n");
   scanf ("%d %d", int_for_sum, int_for_sum + 1);
 
-  if (pthread_create (&thread_id, NULL, new_thread, (void *) int_for_sum))
+  if (pthread_create (&thread_id, NULL, new_thread, int_for_sum))
     {
       printf ("pthread_create() was unsucessful\n");
       return -1;
