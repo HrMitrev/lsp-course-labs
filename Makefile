@@ -6,11 +6,11 @@ RM = rm
 
 prog : main.o calc_sum.o
 	@echo "final linking..."
-	@${CC} calc_sum.o main.o -o prog
+	@${CC} calc_sum.o main.o -o prog -lpthread
 
 main.o : main.c
 	@echo "compiling main.c"
-	@${CC} main.c -c -o main.o
+	@${CC} main.c -c -o main.o -lpthread
 
 calc_sum.o : calc_sum.c
 	@echo "compiling calc_sum.c"
