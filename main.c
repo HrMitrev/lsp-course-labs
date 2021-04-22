@@ -1,23 +1,28 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include "calc_sum.h"
 
 void* new_thread(void* data)
-{ //data will be NULL (I don't need it)
-
-	//this would also work, but without synchronizations in the future
-    //pthread_detach(pthread_self());
+{
+	int *int_for_sum = data;
 	
-	printf("from new thread: sum = %d own ID: %lu\n", calc_sum(5, 5), pthread_self());
-    pthread_exit(NULL);
+	int *sum = malloc(sizeof(int));
+	*sum = calc_sum(int_for_sum[0], int_for_sum[1]);
+	printf("from new thread: sum = %d own ID: %lu\n", *sum, pthread_self());
+    pthread_exit((void*)sum);
 }
 
 /* like any C program, program's execution begins in main */
 int main(int argc, char* argv[])
 {
     pthread_t  thread_id;
+	int int_for_sum[2];
 
-    if(pthread_create(&thread_id, NULL, new_thread, (void*)NULL))
+	printf("please input two integers\n");
+	scanf("%d %d", int_for_sum, int_for_sum+1);
+	
+    if(pthread_create(&thread_id, NULL, new_thread, (void*)int_for_sum))
     {
         printf("pthread_create() was unsucessful\n");
         return -1;
@@ -26,7 +31,12 @@ int main(int argc, char* argv[])
     printf("My new thread ID is: %lu and the main thread: %lu\n", thread_id, pthread_self());
 	
 	//I don't need the return value of new_thread() for now since it returns NULL anyway
-	pthread_join(thread_id, NULL);
+	int *sum;
+	pthread_join(thread_id, (void**)&sum);
+	
+	printf("the sum from the helping thread is %d\n", *sum);
+	
+	free(sum);
     
     pthread_exit(NULL);
 }
