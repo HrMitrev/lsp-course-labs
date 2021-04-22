@@ -34,7 +34,7 @@ main (int argc, char *argv[])
 
   //I don't need the return value of new_thread() for now since it returns NULL anyway
   int *sum;
-  pthread_join (thread_id, (void **)&sum);
+  pthread_join (thread_id, &sum);
 
   printf ("the sum from the helping thread is %d\n", *sum);
 
