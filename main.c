@@ -54,5 +54,17 @@ main (int argc, char *argv[])
 	if (munmap(mapped_file, len) || close(fd))
 	{
 		fprintf(stderr, "file close err\r\n");
-	}	
+	}
+	
+	printf("press any key to exit...\r\n");
+	
+	//use system call to make terminal send all keystrokes directly to stdin
+	system ("/bin/stty raw");
+	char fictive = getchar();
+	//use system call to set terminal behaviour to more normal behaviour
+	system ("/bin/stty cooked");
+	
+	printf("\r\n");
+	
+	exit(EXIT_SUCCESS);	
 }
