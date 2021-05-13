@@ -7,13 +7,12 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-
-
 void exit_err(void)
 {
 	fprintf(stderr, "unexpected error\r\n");
 	exit(EXIT_FAILURE);
 }
+
 int
 main (int argc, char *argv[])
 {
@@ -40,6 +39,8 @@ main (int argc, char *argv[])
 	{
 		exit_err();
 	}
+	
+	printf("the mapped file pointer is 0x%p\r\n", mapped_file);
 	
 	printf("the file contents are:");
 	for(int i=0; i<len; ++i)
