@@ -26,7 +26,7 @@ main (int argc, char *argv[])
 		exit_err();
 	}
 	
-	fd = open(argv[1], O_RDONLY);
+	fd = open("/usr/share/dict/words", O_RDONLY);
 	
 	if(fd == 0 || fstat(fd, &status))
 	{
@@ -42,14 +42,10 @@ main (int argc, char *argv[])
 	
 	printf("the mapped file pointer is 0x%p\r\n", mapped_file);
 	
-	printf("the file contents are:");
-	for(int i=0; i<len; ++i)
-	{
-		if(i%16 == 0) printf("\r\n");
-		printf("%X ", mapped_file[i]);
-	}
+	char *word = strstr(mapped_file, argv[1]);
+	if(word != NULL && *(word + strlen(argv[1])) != '\r' && *(word + strlen(argv[1])) != '\n') word = NULL;
 	
-	printf("\r\n");
+	printf("the word %s is %s in the dictionary\r\n", argv[1], word == NULL ? "absent" : "present");
 	
 	if (munmap(mapped_file, len) || close(fd))
 	{
