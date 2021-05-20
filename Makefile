@@ -14,4 +14,4 @@ main.o : main.c
 
 clean :
 	@echo "cleaning"
-	@${RM} -rf main.o calc_sum.o prog
+	@${RM} -rf main.o prog

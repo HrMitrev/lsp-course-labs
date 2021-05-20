@@ -13,6 +13,34 @@ void exit_err(void)
 	exit(EXIT_FAILURE);
 }
 
+
+char* search_char_forward(int len, char *str, char c)
+{
+	char *ret = NULL;
+	for(int i=0; i<len && ret; ++i)
+	{
+		if( *(str+i) == c) ret = str+i;
+	}
+	
+	return ret;
+}
+
+char* search_char_backward(int len, char *str, char c)
+{
+	if(len > 1)
+	{
+		str -= 2;
+		len -= 2;
+	}
+	char *ret = NULL;
+	for(int i=0; i<len && ret; ++i)
+	{
+		if( *(str-i) == c) ret = str+i;
+	}
+	
+	return ret;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -42,10 +70,42 @@ main (int argc, char *argv[])
 	
 	printf("the mapped file pointer is 0x%p\r\n", mapped_file);
 	
+	char *start = (mapped_file + (len/2));
+	int len_to_end = len - (start - mapped_file);
+	start = search_char_forward(len_to_end, mapped_file, '\n') + 1;
+	
+	int word_len = strlen(argv[1]);
+	
+	for(int i=0; i<word_len; ++i)
+	{
+		int flag;
+		while((flag = (*(start + i) - *(argv[1] + i))))
+		{
+			if(flag < 1)
+			{
+				int len_to_end = len - (start - mapped_file);
+				start = search_char_forward(len_to_end, mapped_file, '\n') + 1;
+			}
+			else
+			{
+				int len_to_end = (start - mapped_file);
+				start = search_char_backward(len_to_end, mapped_file, '\n') + 1;
+			}
+		}
+	}
+	
+	printf("word - %s\r\n", start);
+	
+	
 	char *word = strstr(mapped_file, argv[1]);
 	if(word != NULL && *(word + strlen(argv[1])) != '\r' && *(word + strlen(argv[1])) != '\n') word = NULL;
 	
 	printf("the word %s is %s in the dictionary\r\n", argv[1], word == NULL ? "absent" : "present");
+	
+	if(word)
+	{
+		
+	}
 	
 	if (munmap(mapped_file, len) || close(fd))
 	{
